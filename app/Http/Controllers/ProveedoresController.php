@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+
 class ProveedoresController extends Controller
 {
     /**
@@ -30,12 +31,12 @@ class ProveedoresController extends Controller
      */
     public function store(Request $request)
     {
-        $Mensaje=[
+        $Mensaje = [
             'required' => 'El :attribute es requerido',
             'unique' => 'El registro ya existe en la base',
         ];
 
-        $validaciones = validator::make($request->all(),[
+        $validaciones = validator::make($request->all(), [
             //unique:nombredelatabla
             'CodigoProveedor' => 'required|max:15|unique:proveedores',
             'NombreProveedor' => 'required|max:50|unique:proveedores',
@@ -47,15 +48,15 @@ class ProveedoresController extends Controller
             'NITProveedor' => '|max:20|',
             'NIDFiscal' => 'max:25',
             'TituloProveedor' => 'max:50'
-        ],$Mensaje);
+        ], $Mensaje);
 
 
-        if ($validaciones->fails()){
+        if ($validaciones->fails()) {
             $errores = $validaciones->errors();
 
-            return response()-> json($errores, 402);
-        }else{
-             $Proveedores = Proveedores::create($request->all());
+            return response()->json($errores, 402);
+        } else {
+            $Proveedores = Proveedores::create($request->all());
 
             return '{"msg":"creado","result":' . $Proveedores . '}';
         };
@@ -70,19 +71,19 @@ class ProveedoresController extends Controller
     public function show(Proveedores $proveedores)
     {
         $proveedores = DB::table('proveedores')
-        ->join('tipo_proveedors', 'proveedores.TipoProveedorID', '=', 'tipo_proveedors.IdTipo')
-        ->select(
-            'proveedores.IdProveedor',
-            'proveedores.CodigoProveedor',
-            'proveedores.NombreProveedor',
-            'proveedores.TelefonoProveedor',
-            'proveedores.EmailProveedor',
-            'tipo_proveedors.IdTipo',
-            'tipo_proveedors.NombreTipo'
+            ->join('tipo_proveedors', 'proveedores.TipoProveedorID', '=', 'tipo_proveedors.IdTipo')
+            ->select(
+                'proveedores.IdProveedor',
+                'proveedores.CodigoProveedor',
+                'proveedores.NombreProveedor',
+                'proveedores.TelefonoProveedor',
+                'proveedores.EmailProveedor',
+                'tipo_proveedors.IdTipo',
+                'tipo_proveedors.NombreTipo'
             )
-        ->where('Inactivo' ,'<>', 1)
-        ->orderByDesc("IdTipo")
-        ->get();
+            ->where('Inactivo', '<>', 1)
+            ->orderByDesc("IdTipo")
+            ->get();
         return $proveedores;
     }
 
@@ -93,9 +94,21 @@ class ProveedoresController extends Controller
      * @param  \App\Models\Proveedores  $proveedores
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Proveedores $proveedores)
+    public function update(Request $request, $IdProveedor)
     {
-        //
+        // $pedido = Proveedores::where('IdProveedor',$IdProveedor2)->first();
+        $pedido = Proveedores::find($IdProveedor);
+            $pedido->NombreProveedor = $request->input("NombreProveedor");
+            $pedido->CodigoProveedor = $request->input("CodigoProveedor");    
+            $pedido->MovilProveedor = $request->input("MovilProveedor");
+            $pedido->EmailProveedor = $request->input("EmailProveedor");
+            $pedido->TipoProveedorID = $request->input("TipoProveedorID");;
+            $pedido->FaxProveedor = $request->input("FaxProveedor");
+            $pedido->NITPRoveedor = $request->input("NITPRoveedor");
+            $pedido->NIDFiscal = $request->input("NIDFiscal");
+            $pedido->TituloProveedor = $request->input("TituloProveedor");
+            $pedido->save();
+            return response()->json($pedido);
     }
 
     /**
@@ -106,10 +119,10 @@ class ProveedoresController extends Controller
      */
     public function destroy($IdProveedor)
     {
-        $Proveedor=Proveedores::where('IdProveedor',$IdProveedor)
-                ->update([
-                    'Inactivo' => 1
-         ]);
+        $Proveedor = Proveedores::where('IdProveedor', $IdProveedor)
+            ->update([
+                'Inactivo' => 1
+            ]);
         // $res = User::destroy($id);
         if ($Proveedor) {
             return response()->json([

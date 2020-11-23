@@ -65,6 +65,7 @@ Route::get('Sucursal', [SucursalController::class,'index']);
 Route::get('Sucursales', [SucursalController::class,'show']);
 Route::post('Sucursales', [SucursalController::class,'store']);
 Route::post('Sucursales/{IdSucursal}', [SucursalController::class,'update']);
+Route::post('EditarProveedores/{IdProveedor}', [ProveedoresController::class,'update']);
 
 Route::get('Inventario', [InventarioController::class,'index']);
 Route::post('login', [UsuarioController::class,'login']);
