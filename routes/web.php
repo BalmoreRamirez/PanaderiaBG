@@ -41,6 +41,7 @@ Route::post('MateriaPrimaProveedor', [MateriaPrimaProveedorController::class, 's
 Route::get('Bodegas',[BodegaController::class,'index']);
 Route::post('Pedido',[PedidoController::class, 'store']);
 Route::get('Roles', [RolController::class,'index']);
+Route::post('Roles', [RolController::class,'store']);
 Route::get('Usuarios', [UsuarioController::class,'index']);
 Route::get('UnidadMateria', [UnidadMedidasController::class,'index']);
 //Proveedores

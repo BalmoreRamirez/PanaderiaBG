@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Rol;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class RolController extends Controller
 {
@@ -27,7 +29,25 @@ class RolController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $Mensaje = [
+            'required' => 'El :attribute es requerido',
+            'unique' => 'EL registro ya existe en la Base' 
+        ];
+
+        $validaciones = validator::make($request->all(), [
+            'NombreRol' => 'required|unique:rols',
+        
+        ], $Mensaje);
+
+        if ($validaciones->fails()) {
+            $errores = $validaciones->errors();
+
+            return response()->json($errores, 402);
+        } else {
+            $Rol = Rol::create($request->all());
+
+            return '{"msg":"creado","result":' . $Rol . '}';
+        };
     }
 
     /**
